@@ -30,3 +30,15 @@ def get_user(id:int , db: session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with id: {id} does not exist")
 
     return user
+
+## Deleting all users... 
+@router.delete("/all")
+def delete_all_user(db:session = Depends(get_db)):
+
+    user = db.query(models.User)
+    if not user.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"no user exist")
+    
+    user.delete(synchronize_session=False)
+    db.commit()
+    return {"ok":"done"}

@@ -1,3 +1,4 @@
+from app import oauth2
 from .. import models, schemas
 from ..database import get_db
 from sqlalchemy.orm import session
@@ -17,7 +18,7 @@ def get_post(db: session = Depends(get_db)):
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
-def create_posts(post: schemas.CreatePost, db: session = Depends(get_db)):
+def create_posts(post: schemas.CreatePost, db: session = Depends(get_db), user_id : int =Depends(oauth2.get_current_user)):
     # new_post = models.Post(title=post.title, content=post.content, published=post.published)
     new_post = models.Post(**post.model_dump())
     db.add(new_post)
@@ -37,7 +38,7 @@ def get_post(id: int, db: session = Depends(get_db)):
 
     
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id:int, db: session = Depends(get_db)):
+def delete_post(id:int, db: session = Depends(get_db), user_id : int =Depends(oauth2.get_current_user)):
     #deleting post
 
     post = db.query(models.Post).filter(models.Post.id == id)
