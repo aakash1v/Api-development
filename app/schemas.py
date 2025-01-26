@@ -39,6 +39,14 @@ class Post(PostBase):
     owner_id: int
     owner: UserOut  
 
+class PostOut(BaseModel):
+    Post: Post  # Nested Post model
+    votes: int  # Vote count
+
+    class Config:
+        from_attributes = True
+    
+
 class Vote(BaseModel):
     post_id:int
     dir: conint(le=1)
